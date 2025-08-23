@@ -9,19 +9,22 @@ import Login from './pages/login.jsx';
 import Register from './pages/Register.jsx';
 import ProtectedRoute from './layouts/ProtectedRoute.jsx';
 import AuthProtectedRoute from './layouts/AuthProtectedRoute.jsx';
+import ChangePassword from './pages/ChangePassword.jsx';
 
 
 
 const router = createBrowserRouter([
-  {path: '', element: <MainLayout />, children: [
+  {path: '/', element: <MainLayout />, children: [
     {index:true , element: <ProtectedRoute><FeedPage /></ProtectedRoute>},
     {path: 'profile' , element: <ProtectedRoute><ProfilePage /></ProtectedRoute>},
-    {path: 'post-details', element: <ProtectedRoute><PostDetailsPage /></ProtectedRoute>},
+    {path: 'post-details/:id', element: <ProtectedRoute><PostDetailsPage /></ProtectedRoute>},
     {path: '*', element: <ErrorPage />},
   ]},
   {path: '', element: <AuthLayout />, children: [
     {path: 'login', element: <AuthProtectedRoute><Login /></AuthProtectedRoute>},
     {path: 'register', element:<AuthProtectedRoute><Register /></AuthProtectedRoute>},
+    {path: 'change-password', element:<AuthProtectedRoute><ChangePassword /></AuthProtectedRoute>},
+    {path: '*', element: <Login />},
   ]
   },
 ])
