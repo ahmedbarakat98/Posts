@@ -1,10 +1,10 @@
 import React, { useState } from "react";
-import User from './User';
 import PostBody from "./PostBody";
 import { Link } from "react-router-dom";
 import Commet from "./Commet";
 import { Button, Input } from "@heroui/react";
 import { createCommentApi } from "../services/commentServices";
+import Comments from "./Comments";
 
 
 export default function Card({post , commetLimit }) {
@@ -27,10 +27,11 @@ export default function Card({post , commetLimit }) {
 
 
   return <>
-    <div className="bg-white border my-3 rounded-sm max-w-md">
+    <div className="bg-white border relative my-3 rounded-sm max-w-md">
 
-      <Commet post={post} /> 
+      <Commet post={post} />
       <PostBody img={post.image} body={post.body} />
+      
 
       <div className="flex items-center justify-between mx-4 mt-3 mb-2">
         <div className="flex gap-5">
@@ -61,18 +62,17 @@ export default function Card({post , commetLimit }) {
       
       
       {/* create comment  */}
-      <form onSubmit={createComment} className="px-4 flex gap-2">
+      <form onSubmit={createComment} className="px-4 flex gap-2 my-3">
         <Input placeholder="Comment ..."  value={commentContent} onChange={(e)=> setCommentContent(e.target.value)} />
         <Button isLoading={loading} type="submit" disabled={commentContent.length < 3 } variant="ghost">Add Comment</Button>
       </form>
 
 
 
-      {/* comments */}  
-       <div className=" text-sm mx-4 mt-2 mb-4 p-3 bg-gray-300 rounded-2xl "> 
-        {comments.length > 0 && 
-        comments.slice( 0, commetLimit ).map((comment)=><Commet post={comment} key={comment._id}/>)}                  
-        </div>
+      {/* comments */}
+        {comments.length > 0 && <div className=" text-sm mx-4 mt-2 mb-4 p-3 bg-gray-300 rounded-2xl ">
+          {comments.slice( 0, commetLimit ).map((comment)=><Comments post={post}  comment={comment} key={comment._id}/>)}
+        </div> }
 
 
     </div>

@@ -4,14 +4,13 @@ import {
   NavbarBrand,
   NavbarContent,
   NavbarItem,
-  NavbarMenuToggle,
-  Link,
+  Link as LinkHero,
   Button,
 } from "@heroui/react";
-import { useNavigate } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import { useContext } from "react";
 import { AuthContext } from "../contexts/AuthContext";
-import { set } from "zod";
+import photo from '../assets/bm.jpg'
 
 export const AcmeLogo = () => {
   return (
@@ -32,26 +31,33 @@ export default function Navbar() {
 
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const nav = useNavigate()
-  const {isLoggedIn , setIsLoggedIn } = useContext(AuthContext);
+  const {isLoggedIn , setIsLoggedIn , setUserData} = useContext(AuthContext);
 
   
   function setLogout(){
     localStorage.removeItem("token");
     setIsLoggedIn(false);
+    setUserData(null);
     nav('/login');
   }
   
 
   return (
     <Nav onMenuOpenChange={setIsMenuOpen}>
-      <NavbarContent>
-        <NavbarMenuToggle
-          aria-label={isMenuOpen ? "Close menu" : "Open menu"}
-          className="sm:hidden"
-        />
-        <NavbarBrand>
+      {isLoggedIn && <NavbarContent>
+        <NavbarBrand >
+          <Link className="text-inherit flex cursor-pointer" to='/profile'>
+          <div className="size-8 bg-amber-800 rounded-full me-4 overflow-hidden flex justify-center items-center">
+            <img className="w-full " src={photo} alt="Pic" />
+          </div>
+          <h3 className="hidden md:flex">Profile Page</h3></Link>
+        </NavbarBrand>
+      </NavbarContent>}
+
+      <NavbarContent >
+        <NavbarBrand className={isLoggedIn? " flex justify-center items-center" : "flex justify-start"}>
           <AcmeLogo />
-          <Link className="font-bold text-inherit cursor-pointer" to='/'>Post Link</Link>
+          <Link className="font-bold text-inherit cursor-pointer " to='/'>Post Link</Link>
         </NavbarBrand>
       </NavbarContent>
 

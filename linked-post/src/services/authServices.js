@@ -35,4 +35,30 @@ export  async function sendPassword(password , newPassword , logToken) {
         return error;
     }
 }
+export  async function sendProfilePhoto(formData , token) {
+    try {
+        let {data} = await axios.put("https://linked-posts.routemisr.com/users/upload-photo" , formData
+        ,{
+            headers: {
+                token : token,
+            }
+        })
+        return data;        
+    }catch (error) {
+        return error;
+    }
+}
+export  async function getUserData() {
+    try {
+        let {data} = await axios.get("https://linked-posts.routemisr.com/users/profile-data" 
+        ,{
+            headers: {
+                token : localStorage.getItem('token'),
+            }
+        })
+        return data;        
+    }catch (error) {
+        return error;
+    }
+}
     

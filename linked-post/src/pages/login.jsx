@@ -1,5 +1,5 @@
 import { Button, Input } from "@heroui/react";
-import React, { useState } from "react";
+import React, { useMemo, useState } from "react";
 import { useForm } from "react-hook-form";
 import {sendLoginData} from "../services/authServices";
 import z, { set } from "zod";
@@ -12,7 +12,10 @@ export default function login() {
   const [loading, setLoading] = useState(false);
   const [apiError, setApiError] = useState(null);
   const [success, setSuccess] = useState(null);
-  const nav = useNavigate();
+  function refreshApp(){
+  window.location.reload();
+};
+
 
   const {handleSubmit , register , formState:{errors}} = useForm({
     defaultValues: {
@@ -29,14 +32,11 @@ export default function login() {
       setLoading(false);   
       if (response.message) {
       setSuccess(response.message)
-      nav('/');
-      console.log(response);
-      localStorage.setItem("token", response.token);
-      
+      localStorage.setItem("token", response.token); 
+      refreshApp();  
     }else{
       setApiError(response);
-    }
-      
+    } 
     }
 
   return <>
@@ -60,9 +60,14 @@ export default function login() {
             </a>
           </p>
           <p className="text-center text-gray-500 mt-0">
+            <div className="flex justify-around">
+              <a href="/upload-photo" className="text-blue-500 hover:underline capitalize">
+              Upload Your Photo
+            </a>
             <a href="/change-password" className="text-red-500 hover:underline capitalize">
               Change Password
             </a>
+            </div>
           </p>
         </form>
       </div>

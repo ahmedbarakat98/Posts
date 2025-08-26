@@ -7,7 +7,7 @@ import AuthContextProvider from './contexts/AuthContext.jsx'
 
 
 createRoot(document.getElementById('root')).render(
-  <StrictMode>
+  // <StrictMode>
     <HeroUIProvider>
       <AuthContextProvider>
         
@@ -15,5 +15,5 @@ createRoot(document.getElementById('root')).render(
 
       </AuthContextProvider>
     </HeroUIProvider>
-  </StrictMode>,
+  // </StrictMode>,
 )
