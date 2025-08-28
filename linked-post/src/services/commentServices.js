@@ -34,7 +34,9 @@ export async function deleteComment(commentId) {
 export async function updateComment(commentId , updatedformData) {
     try {
         const {data} = await axios.put('https://linked-posts.routemisr.com/comments/'+commentId,
-            updatedformData            
+            {
+                content : updatedformData
+            }            
             ,{
             headers : {
                 token : localStorage.getItem('token')

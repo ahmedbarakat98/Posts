@@ -1,4 +1,4 @@
-import React, { useContext } from "react";
+import React, { useContext, useState } from "react";
 import User from "./User";
 import { AuthContext } from "../contexts/AuthContext";
 import UnKnownPhoto from "../assets/UnKnown_person.jpg";
@@ -10,7 +10,7 @@ import {
 } from "@heroui/react";
 import DropDownAction from "./DropDownAction";
 
-export default function Comments({ post, comment }) {
+export default function Comments({ post, comment , setHandelEdit }) {
   const { userData } = useContext(AuthContext);
   
 
@@ -34,7 +34,7 @@ export default function Comments({ post, comment }) {
           </div>
         </div>
         {userData._id === post.user._id &&
-          userData._id === comment.commentCreator._id && <DropDownAction commentId={comment._id} />}
+          userData._id === comment.commentCreator._id && <DropDownAction setHandelEdit={setHandelEdit}  commentId={comment._id} commentContent={comment.content} />}
       </div>
       <div className="px-4">
         <p>{comment.content}</p>

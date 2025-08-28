@@ -5,13 +5,17 @@ import Commet from "./Commet";
 import { Button, Input } from "@heroui/react";
 import { createCommentApi } from "../services/commentServices";
 import Comments from "./Comments";
+import CreatePost from "./CreatePost";
 
 
-export default function Card({post , commetLimit }) {
+export default function Card({post , commetLimit , callback }) {
 
   const [commentContent, setCommentContent] = useState('');
   const [loading, setLoading] = useState(false);
   const [comments, setComments] = useState(post.comments);
+  const [handelEdit, setHandelEdit] = useState(null);
+  const [isUpdating, setIsUpdating] = useState(false);
+
 
   async function createComment(e) {
     e.preventDefault()
@@ -20,6 +24,7 @@ export default function Card({post , commetLimit }) {
     const response = await createCommentApi( commentContent , post.id);
     if (response.message) {
       setComments(response.comments)
+      setHandelEdit(false)
     }
     setLoading(false);
     setCommentContent('');
@@ -27,9 +32,10 @@ export default function Card({post , commetLimit }) {
 
 
   return <>
+  {isUpdating ?  <CreatePost setIsUpdating={setIsUpdating} callback={callback} post={post} setHandelEdit={setHandelEdit} isUpdating={isUpdating} />  :  
     <div className="bg-white border relative my-3 rounded-sm max-w-md">
 
-      <Commet post={post} />
+      <Commet post={post} setIsUpdating={setIsUpdating} />
       <PostBody img={post.image} body={post.body} />
       
 
@@ -62,19 +68,26 @@ export default function Card({post , commetLimit }) {
       
       
       {/* create comment  */}
+      {handelEdit ? <form onSubmit={createComment} className="px-4 flex gap-2 my-3">
+        <Input placeholder="Comment ..."  value={commentContent} onChange={(e)=> setCommentContent(e.target.value)} />
+        <Button isLoading={loading} type="submit" disabled={commentContent.length < 3 } variant="ghost">Edit Comment</Button>
+      </form> :
       <form onSubmit={createComment} className="px-4 flex gap-2 my-3">
         <Input placeholder="Comment ..."  value={commentContent} onChange={(e)=> setCommentContent(e.target.value)} />
         <Button isLoading={loading} type="submit" disabled={commentContent.length < 3 } variant="ghost">Add Comment</Button>
       </form>
+      
+      }
 
 
 
       {/* comments */}
         {comments.length > 0 && <div className=" text-sm mx-4 mt-2 mb-4 p-3 bg-gray-300 rounded-2xl ">
-          {comments.slice( 0, commetLimit ).map((comment)=><Comments post={post}  comment={comment} key={comment._id}/>)}
+          {comments.slice( 0, commetLimit ).map((comment)=><Comments setHandelEdit={setHandelEdit} post={post}  comment={comment} key={comment._id}/>)}
         </div> }
 
 
     </div>
+    }
   </>;
 }

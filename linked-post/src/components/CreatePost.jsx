@@ -1,71 +1,100 @@
 import { Button, Spinner, Textarea } from "@heroui/react";
 import { useEffect, useMemo, useState } from "react";
-import { createPostApi, getAllPostsApi } from "../services/postServices";
+import {
+  createPostApi,
+  getAllPostsApi,
+  updatePost,
+} from "../services/postServices";
+import { fa } from "zod/v4/locales";
 
-export default function CreatePost({callback}) {
-  const [postText, setpostText] = useState("");
+export default function CreatePost({callback , post , isUpdating , setIsUpdating }) {
+  const [postBody, setPostBody] = useState( post?.body ?? '');
   const [img, setImg] = useState(null);
-  const [imgUrl, setImgUrl] = useState(null);
+  const [imgUrl, setImgUrl] = useState(post?.image ?? '');
   const [loading, setLoading] = useState(false);
-  
-   
 
-  async function crPost(e) {
-    setLoading(true)
-    e.preventDefault()
-    const formData = new FormData();
-    {postText && formData.append('body' , postText);}
-    {img && formData.append('image' , img)}
-    
-    const response = await createPostApi(formData);
-    if (response.message) {
-      await callback();
-      setpostText('');
-      setImg('');  
-      setImgUrl(''); }else{
-        setLoading(false)
-      }
-    setLoading(false)
+  async function urlToFile() {
+    const response = await fetch(post?.image);
+    const data = await response.blob();
+    let file = new File([data] , 'image' , {type: 'image/jpg'});
+    setImg(file)   
   }
 
+  useEffect(() => {
+    urlToFile()
+  }, [])
   
 
-  function handleImage(e) {
+  async function handelSubmit(e){
+    e.preventDefault()
+    setLoading(true)
+    const formData = new FormData();
+    formData.append('body' , postBody);
+    formData.append('image' , img);
+    let response ;
+    {isUpdating ?
+    response = await updatePost(post.id , formData) : response = await createPostApi(formData)}  
+    if (response.message) {
+      await callback()
+      setLoading(false)
+      setPostBody('')
+      setImg('')
+      setImgUrl('')
+      setIsUpdating(false)
+      
+    }    
+  }
+
+  function handelImage(e){
     setImg(e.target.files[0]);
-    setImgUrl( URL.createObjectURL(e.target.files[0]))
+    setImgUrl(URL.createObjectURL(e.target.files[0]));
     e.target.value = '';
   }
 
   return (
     <>
-      <form onSubmit={crPost} className=" bg-gray-200 relative rounded-2xl my-4 p-3 flex flex-wrap justify-between items-center">
+      <form
+        onSubmit={(e)=>handelSubmit(e)}
+        className=" bg-gray-200 relative rounded-2xl max-w-md my-4 p-3 flex flex-wrap justify-between items-center"
+      >
         <Textarea
+          value={postBody}
+          onChange={(e)=> setPostBody(e.target.value)}
           placeholder="Create Post Now ..."
           className="w-full mb-3"
-          value={postText}
-          onChange={(e) => setpostText(e.target.value)}
         />
-        {imgUrl && <div className=" relative w-full mb-3">
-          <img src={imgUrl} alt="photo" />
-          <svg
-            onClick={()=>setImgUrl('')}
-            xmlns="http://www.w3.org/2000/svg"
-            fill="none"
-            viewBox="0 0 24 24"
-            strokeWidth="1.5"
-            stroke="currentColor"
-            className="size-6 absolute top-2 right-2 cursor-pointer"
-          >
-            <path
-              strokeLinecap="round"
-              strokeLinejoin="round"
-              d="M6 18 18 6M6 6l12 12"
-            />
-          </svg>
-        </div>}
+          {imgUrl && <div className=" relative w-full mb-3">
+            <img src={imgUrl} alt="photo" />
+            {/* close icon  */}
+            <svg
+              onClick={() => {
+                setImgUrl("");
+                setImg("");
+              }}
+              xmlns="http://www.w3.org/2000/svg"
+              fill="none"
+              viewBox="0 0 24 24"
+              strokeWidth="1.5"
+              stroke="currentColor"
+              className="size-6 absolute top-2 right-2 cursor-pointer"
+            >
+              <path
+                strokeLinecap="round"
+                strokeLinejoin="round"
+                d="M6 18 18 6M6 6l12 12"
+              />
+            </svg>
+          </div>}
+
         <div>
           <label htmlFor="file" className="cursor-pointer hover:text-blue-400">
-            <input type="file" onChange={(e)=>handleImage(e)} name="file" id="file" className="hidden" />
+            <input
+              onChange={(e)=>handelImage(e)}
+              type="file"
+              name="file"
+              id="file"
+              className="hidden bg-amber-50"
+            />
             <svg
               xmlns="http://www.w3.org/2000/svg"
               fill="none"
@@ -82,16 +111,35 @@ export default function CreatePost({callback}) {
             </svg>
           </label>
         </div>
-        <Button type="submit" className="text-blue-500 border-blue-500" variant="ghost">
-          {" "}
-          Add Post{" "}
-        </Button>
-        {loading && <div className="absolute inset-0 bg-black/25 rounded-2xl flex justify-center items-center ">
-        <Spinner></Spinner>        
+        {!post ? <Button
+            type="submit"
+            className="text-blue-500 border-blue-500"
+            variant="ghost"
+          >
+            {" "}
+            Add Post{" "}
+          </Button> : 
+        <div className="flex gap-1.5">
+          <Button
+            className="text-black border-black"
+            variant="ghost"
+          >
+            {" "}
+            Cancel{" "}
+          </Button>
+          <Button
+            type="submit"
+            className="text-blue-500 border-blue-500"
+            variant="ghost"
+          >
+            {" "}
+            edit Post{" "}
+          </Button>
         </div>}
-        
+          {loading && <div className="absolute inset-0 bg-black/25 rounded-2xl flex justify-center items-center ">
+            <Spinner></Spinner>
+          </div>}
       </form>
-      
     </>
   );
 }

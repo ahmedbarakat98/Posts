@@ -7,7 +7,6 @@ import CreatePost from "../components/CreatePost";
 export default function FeedPage() {
 
   const [posts, setPosts] = useState([]);
-  
 
 
   async function getPosts() {
@@ -24,12 +23,12 @@ export default function FeedPage() {
   return (
     <>
       <div className="w-8/12 md:w-4/12  mx-auto">
-        <CreatePost callback={getPosts} />
+        <CreatePost callback={getPosts}   />
         {posts?.length == 0 ? (
           <Loading />
         ) : (
           posts?.map((post) => (
-            <Card key={post.id} post={post} commetLimit={1} />
+            <Card key={post.id} post={post} commetLimit={1} callback={getPosts} />
           ))
         )}
       </div>

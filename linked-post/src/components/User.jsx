@@ -6,7 +6,7 @@ import DropDownAction from "./DropDownAction";
 
 
 
-export default function User({ post }) {
+export default function User({ post , setIsUpdating }) {
 
   const {userData}  = useContext(AuthContext);
 
@@ -29,7 +29,7 @@ export default function User({ post }) {
           </div>
         </div>
          {userData._id === post.user?._id   &&
-          <DropDownAction postId={post._id} />}
+          <DropDownAction postId={post._id} setIsUpdating={setIsUpdating} />}
       </div>
     </>
 }

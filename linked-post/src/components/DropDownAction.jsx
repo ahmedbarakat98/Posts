@@ -8,7 +8,7 @@ import {
 import { deleteComment } from "../services/commentServices";
 import { deletePost } from "../services/postServices";
 
-export default function DropDownAction({ commentId, postId }) {
+export default function DropDownAction({ commentId, postId , commentContent , setIsUpdating , setHandelEdit}) {
 
   async function deleteC(commentId , postId) {
     if (commentId) {
@@ -31,6 +31,10 @@ export default function DropDownAction({ commentId, postId }) {
     }
        
   }
+  async function editComment(commentId , commentContent) {
+
+    
+  }
   
 
   return <>
@@ -52,7 +56,11 @@ export default function DropDownAction({ commentId, postId }) {
           </svg>
         </DropdownTrigger>
         <DropdownMenu aria-label="Static Actions">
-          <DropdownItem key="edit">Edit</DropdownItem>
+          <DropdownItem key="edit"
+          onClick={() => {
+              setIsUpdating(true);
+            }}          
+          >Edit</DropdownItem>
           <DropdownItem
             key="delete"
             onClick={() => {

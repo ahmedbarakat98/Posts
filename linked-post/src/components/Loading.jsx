@@ -4,7 +4,7 @@ import React from "react";
 export default function Loading() {
   return <>
       
-      <Card className="w-full space-y-5 p-4" radius="lg">
+      <Card className="w-full space-y-5 p-4 max-w-md" radius="lg">
         <div className="max-w-[300px] w-full flex items-center gap-3">
         <div>
           <Skeleton className="flex rounded-full w-12 h-12" />
